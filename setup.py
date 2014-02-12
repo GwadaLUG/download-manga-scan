@@ -5,7 +5,7 @@ setup(
     name='download-manga-scan',
     version=__import__("download_manga_scan").__version__,
     description=u'client de téléchargement de scan de manga',
-    long_description=open('README.txt').read(),
+    long_description=open('README.md').read(),
     author='Laurent Vergerolle - Gwadalug',
     author_email='lvergerolle@gmail.com',
     url='https://github.com/GwadaLUG/download-manga-scan',
