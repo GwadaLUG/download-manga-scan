@@ -1,15 +1,20 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
+"""
+This file is part of Download Manga Scan.
 
-u"""
-Télécharge les scan sur le site lecture-en-ligne.com
+Foobar is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-TODO:
-    Créer une classe qui génère un fichier CSV avec toutes les
-    informations nécessaires à une recherche et un téléchargement des
-    scans.
-    Ça evitera de devoir faire des requetes et des parse pour chaque
-    téléchargement. Ça prend trop de temps.
+Foobar is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Foobar.  If not, see <http://www.gnu.org/licenses/>
 """
 
 import argparse
@@ -18,6 +23,7 @@ import urlparse
 import os
 import re
 
+__all__ = ['DownloadScan']
 
 # Variables globales
 SCAN_DOMAIN = "http://www.lecture-en-ligne.com"
@@ -262,8 +268,7 @@ class DownloadScan(object):
 
         return
 
-if __name__== '__main__':
-
+def main():
     args = parser.parse_args()
 
     scan_label = args.scan_label
@@ -275,3 +280,5 @@ if __name__== '__main__':
     dl = DownloadScan(scan_label, scan_path, chapters)
     dl.download_scan(ignore_files)
 
+if __name__== '__main__':
+    main()
