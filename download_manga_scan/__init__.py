@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 """
 This file is part of Download Manga Scan.
 
@@ -15,23 +16,56 @@ You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <http://www.gnu.org/licenses/>
 """
 
-VERSION = (0, 0, 1, "f") # following PEP 386
-DEV_N = None
-
 __author__ = "Laurent Vergerolle"
 __copyright__ = "Copyright (c) 2014 Laurent Vergerolle"
 __license__ = "GPL-V3"
+__all__ = ['DownloadScan', 'main']
 
-def get_version():
-    version = "%s.%s" % (VERSION[0], VERSION[1])
-    if VERSION[2]:
-        version = "%s.%s" % (version, VERSION[2])
-    if VERSION[3] != "f":
-        version = "%s%s" % (version, VERSION[3])
-        if DEV_N:
-            version = "%s.dev%s" % (version, DEV_N)
-    return version
+VERSION = (0, 0, 1)
+DEV_N = True
 
-__version__ = get_version()
+def get_version(version, alpha_num=None, beta_num=None,
+                rc_num=None, post_num=None, dev_num=None):
+    u"""Crée la version en fonction de la PEP 386.
+    On affiche toujours la version la moins aboutie.
+    Exemple, si alpha, beta et rc sont spécifié, on affiche la version
+    comme alpha.
 
-from download_scan import DownloadScan
+    Attributes:
+        version: tuple du numéro de version actuel. Ex : (0,0,1) ou (2,0,4)
+        alpha_num: définie que la version comme alpha
+        beta_num: définie la version comme beta
+        rc_num: définie la version comme release candidate
+        post_num: definie la version comme post dev
+        dev_num: définie la version comme en cour de développement
+
+    Returns:
+        numéro de version formaté selon la PET 386
+    """
+    num = "%s.%s" % (int(version[0]), int(version[1]))
+    if version[2]:
+        num += ".%s" % int(version[2])
+
+    letter_marker = False # permet de sortir si on a un marqueur de type lettre
+    if alpha_num:
+        num += "a%s" % int(alpha_num)
+        letter_marker = True
+
+    if beta_num and not letter_marker:
+        num += "b%s" % int(beta_num)
+        letter_marker = True
+
+    if rc_num and not letter_marker:
+        num += "rc%s" % int(rc_num)
+
+    if post_num:
+        num += ".post%s" % int(post_num)
+
+    if dev_num:
+        num += ".dev%s" % int(dev_num)
+
+    return num
+
+__version__ = get_version((0, 0, 1), beta_num=1, dev_num=1)
+
+from download_scan import DownloadScan, main

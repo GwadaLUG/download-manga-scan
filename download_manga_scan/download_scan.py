@@ -23,8 +23,6 @@ import urlparse
 import os
 import re
 
-__all__ = ['DownloadScan']
-
 # Variables globales
 SCAN_DOMAIN = "http://www.lecture-en-ligne.com"
 DEFAULT_SCAN_URL = "/".join([SCAN_DOMAIN, "images/mangas/"])
@@ -280,5 +278,5 @@ def main():
     dl = DownloadScan(scan_label, scan_path, chapters)
     dl.download_scan(ignore_files)
 
-if __name__== '__main__':
+if __name__ == '__main__':
     main()
