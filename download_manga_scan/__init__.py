@@ -21,9 +21,6 @@ __copyright__ = "Copyright (c) 2014 Laurent Vergerolle"
 __license__ = "GPL-V3"
 __all__ = ['DownloadScan', 'main']
 
-VERSION = (0, 0, 1)
-DEV_N = True
-
 def get_version(version, alpha_num=None, beta_num=None,
                 rc_num=None, post_num=None, dev_num=None):
     u"""Crée la version en fonction de la PEP 386.
@@ -31,7 +28,7 @@ def get_version(version, alpha_num=None, beta_num=None,
     Exemple, si alpha, beta et rc sont spécifié, on affiche la version
     comme alpha.
 
-    Attributes:
+    Args:
         version: tuple du numéro de version actuel. Ex : (0,0,1) ou (2,0,4)
         alpha_num: définie que la version comme alpha
         beta_num: définie la version comme beta
