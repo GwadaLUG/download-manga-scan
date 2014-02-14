@@ -15,11 +15,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <http://www.gnu.org/licenses/>
 """
+from download_scan import main
 
 __author__ = "Laurent Vergerolle"
 __copyright__ = "Copyright (c) 2014 Laurent Vergerolle"
 __license__ = "GPL-V3"
-__all__ = ['DownloadScan', 'main']
+__all__ = ['main',]
 
 def get_version(version, alpha_num=None, beta_num=None,
                 rc_num=None, post_num=None, dev_num=None):
@@ -64,5 +65,3 @@ def get_version(version, alpha_num=None, beta_num=None,
     return num
 
 __version__ = get_version((0, 0, 1), beta_num=1, dev_num=1)
-
-from download_scan import DownloadScan, main

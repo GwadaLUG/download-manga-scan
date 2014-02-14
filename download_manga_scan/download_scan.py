@@ -84,7 +84,7 @@ class DownloadScan(object):
     def test_url(self, url):
         u"""Teste si l'URL existe et n'est pas en erreur
 
-        Attributes:
+        Args:
             url: URL a tester
 
         Returns:
@@ -107,7 +107,7 @@ class DownloadScan(object):
     def download_file(self, url, path=None, ignore_file=False):
         u"""Télécharge un fichier depuis une URL
 
-        Attributes:
+        Args:
             url: URL du fichier à télécharger
             path: répertoire où le fichier sera téléchargé
 
@@ -150,7 +150,7 @@ class DownloadScan(object):
     def create_dir(self, path):
         u"""Crée le répertoire si il n'existe pas
 
-        Attributes:
+        Args:
             path: Repertoire a créer
 
         Returns:
@@ -184,7 +184,7 @@ class DownloadScan(object):
     def list_chapter_page_number(self, chapter_num):
         u"""Liste le nombre de page pour un chapitre
 
-        Attributes:
+        Args:
             chapter_number: numéro du chapitre
 
         Returns:
@@ -201,7 +201,7 @@ class DownloadScan(object):
     def list_pages_by_chapters(self):
         u"""TODO: Liste le nombre de page par chapitre
 
-        Attributes:
+        Args:
             chapters: liste des chapitres
 
         Returns:
@@ -267,6 +267,8 @@ class DownloadScan(object):
         return
 
 def main():
+    u"""Lance l'execution de la commande `download-manga`
+    """
     args = parser.parse_args()
 
     scan_label = args.scan_label
