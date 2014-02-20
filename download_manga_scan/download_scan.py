@@ -95,9 +95,7 @@ class DownloadScan(object):
             # Utile pour les sites qui redirige vers des URLS à la con
             # Au lieu de renvoyer un vrai 404
             if '404.html' in resp.geturl():
-                print "no exist"
                 return False
-            print "%s exist" % url
             return True
         except urllib2.HTTPError, e:
             print "HTTP Error:", e.code, url
