@@ -176,7 +176,7 @@ class DownloadScan(object):
         url = urlparse.urljoin(DEFAULT_CHAPTER_URL, "%s/" % self.scan_name)
         if self.test_url(url):
             html = str(urllib2.urlopen(url).read())
-            tabs = re.findall('(<td class="td">)([A-Za-z0-9\ ]+)(chapitre)\ ([0-9]+)', html)
+            tabs = re.findall('(<td class="td">)([A-Za-z0-9\-\ ]+)(chapitre)\ ([0-9]+)', html)
             for t in tabs:
                 chapters.append(t[3])
         return chapters
