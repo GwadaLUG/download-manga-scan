@@ -37,7 +37,7 @@ DEFAULT_SCAN_LIST_FILE = os.path.join(DEFAULT_SCAN_PATH, 'scan_list.csv')
 
 # parser principal
 parser = argparse.ArgumentParser(
-    description=u'Télécharge les scan sur le site lecture-en-ligne.com')
+    description=u'Télécharge les scan de manga depuis des sites en ligne.')
 
 # subparsers
 parser.add_argument('scan_label', type=str,
@@ -95,7 +95,9 @@ class DownloadScan(object):
             # Utile pour les sites qui redirige vers des URLS à la con
             # Au lieu de renvoyer un vrai 404
             if '404.html' in resp.geturl():
+                print "no exist"
                 return False
+            print "%s exist" % url
             return True
         except urllib2.HTTPError, e:
             print "HTTP Error:", e.code, url
@@ -193,7 +195,7 @@ class DownloadScan(object):
         url = "/".join([SCAN_DOMAIN, self.scan_name, str(chapter_num), "0/0/1.html"])
         if self.test_url(url):
             html = str(urllib2.urlopen(url).read())
-            pages = re.findall('(<span class="total_pages">)([0-9]+)(</span)', html)
+            pages = re.findall('(<span class="chapter-max_images">)([0-9]+)(</span)', html)
             if pages:
                 return range(1, int(pages[0][1])+1)
         return []
