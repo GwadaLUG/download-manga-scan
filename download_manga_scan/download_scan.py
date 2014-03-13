@@ -176,9 +176,10 @@ class DownloadScan(object):
         url = urlparse.urljoin(DEFAULT_CHAPTER_URL, "%s/" % self.scan_name)
         if self.test_url(url):
             html = str(urllib2.urlopen(url).read())
-            tabs = re.findall('(<td class="td">)([A-Za-z0-9\-\ ]+)(chapitre)\ ([0-9]+)', html)
+            tabs = re.findall('(<td class="td">)([A-Za-z0-9\-\ \:]+)(chapitre)\ ([0-9]+)', html)
             for t in tabs:
                 chapters.append(t[3])
+                print u"chapitre %s trouvé" % t[3]
         return chapters
 
     def list_chapter_page_number(self, chapter_num):
@@ -195,6 +196,7 @@ class DownloadScan(object):
             html = str(urllib2.urlopen(url).read())
             pages = re.findall('(<span class="chapter-max_images">)([0-9]+)(</span)', html)
             if pages:
+                print u"%s pages trouvé pour le chapitre %s" % (pages[0][1], chapter_num)
                 return range(1, int(pages[0][1])+1)
         return []
 
