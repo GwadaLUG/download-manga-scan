@@ -3,18 +3,18 @@
 """
 This file is part of Download Manga Scan.
 
-Foobar is free software: you can redistribute it and/or modify
+Download Manga Scan is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Foobar is distributed in the hope that it will be useful,
+Download Manga Scan is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>
+along with Download Manga Scan.  If not, see <http://www.gnu.org/licenses/>
 """
 from __future__ import unicode_literals
 
@@ -26,7 +26,7 @@ import re
 
 # Variables globales
 SCAN_DOMAIN = "http://www.lecture-en-ligne.com"
-DEFAULT_SCAN_URL = "/".join([SCAN_DOMAIN, "images/mangas/"])
+DEFAULT_SCAN_URL = "/".join([SCAN_DOMAIN, "images/manga/"])
 DEFAULT_CHAPTER_URL = "/".join([SCAN_DOMAIN, "manga/"])
 DEFAULT_SCAN_DIRNAME = 'scan_dl'
 DEFAULT_SCAN_CHAPTER_DIRNAME = "chapter"
