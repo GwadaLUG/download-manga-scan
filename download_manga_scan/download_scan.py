@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Foobar.  If not, see <http://www.gnu.org/licenses/>
 """
+from __future__ import unicode_literals
 
 import argparse
 import urllib2
@@ -32,36 +33,39 @@ DEFAULT_SCAN_CHAPTER_DIRNAME = "chapter"
 DEFAULT_SCAN_PATH = os.path.abspath(
     os.path.join(os.path.expanduser('~'), DEFAULT_SCAN_DIRNAME))
 TMP_PATH = '/tmp'
-DEFAULT_IMG_EXT = ('jpg','jpeg','gif','png')
+DEFAULT_IMG_EXT = ('jpg', 'jpeg', 'gif', 'png')
 DEFAULT_SCAN_LIST_FILE = os.path.join(DEFAULT_SCAN_PATH, 'scan_list.csv')
 
-# parser principal
+# Variables pour fichiers
+CHUNK = 256 * 10240
+
 parser = argparse.ArgumentParser(
-    description=u'Télécharge les scan de manga depuis des sites en ligne.')
+    description='Télécharge les scan de manga depuis des sites en ligne.')
 
 # subparsers
 parser.add_argument('scan_label', type=str,
-                    help=u"Label du scan a télécharger. Ex: shingekinokyojin")
+                    help="Label du scan a télécharger. Ex: shingekinokyojin")
 parser.add_argument('-d', '--dir-path', type=str,
                     action='store',
                     required=False,
                     dest='dir_path',
                     default=DEFAULT_SCAN_PATH,
-                    help=u"Répertoire de téléchargement des scans")
+                    help="Répertoire de téléchargement des scans")
 parser.add_argument('-i', '--ignore-files',
                     action='store_true',
                     required=False,
                     dest='ignore_files',
                     default=False,
-                    help=u"Ignore les fichiers déjà téléchargés et écrase par dessus")
+                    help=("Ignore les fichiers déjà téléchargés "
+                          "et écrase par dessus"))
 parser.add_argument('chapters', type=int,
                     nargs="*",
                     default=[],
-                    help=u"Liste des chapitres a télécharger. Ex: 1 2 3 4")
+                    help="Liste des chapitres a télécharger. Ex: 1 2 3 4")
 
 
 class DownloadScan(object):
-    u"""Télécharge les scans et les range dans un dossier
+    """Télécharge les scans et les range dans un dossier
 
     Attributes:
         scan_name: Nom du manga
@@ -70,19 +74,14 @@ class DownloadScan(object):
             Si False on télécharge tous les numéros trouvés
     """
 
-    def __init__(
-        self,
-        scan_name,
-        scan_path=DEFAULT_SCAN_PATH,
-        chapters=[]
-    ):
-        u"""Initialisation de la classe DownloadScan"""
+    def __init__(self, scan_name, scan_path=DEFAULT_SCAN_PATH, chapters=None):
+        """Initialisation de la classe DownloadScan"""
         self.scan_name = scan_name
         self.scan_path = scan_path
         self.chapters = chapters
 
     def test_url(self, url):
-        u"""Teste si l'URL existe et n'est pas en erreur
+        """Teste si l'URL existe et n'est pas en erreur
 
         Args:
             url: URL a tester
@@ -97,15 +96,15 @@ class DownloadScan(object):
             if '404.html' in resp.geturl():
                 return False
             return True
-        except urllib2.HTTPError, e:
-            print "HTTP Error:", e.code, url
+        except urllib2.HTTPError, err:
+            print "HTTP Error:", err.code, url
             return False
-        except urllib2.URLError, e:
-            print "URL Error:", e.reason, url
+        except urllib2.URLError, err:
+            print "URL Error:", err.reason, url
             return False
 
     def download_file(self, url, path=None, ignore_file=False):
-        u"""Télécharge un fichier depuis une URL
+        """Télécharge un fichier depuis une URL
 
         Args:
             url: URL du fichier à télécharger
@@ -124,31 +123,29 @@ class DownloadScan(object):
 
         os.umask(0002)
         try:
-            file = os.path.join(path, basefile)
-            if os.path.exists(file) and not ignore_file:
-                print u"Le fichier a déjà été téléchargé"
-                return file
+            mfile = os.path.join(path, basefile)
+            if os.path.exists(mfile) and not ignore_file:
+                print "Le fichier a déjà été téléchargé"
+                return mfile
 
             req = urllib2.urlopen(url)
-            total_size = int(req.info().getheader('Content-Length').strip())
-            downloaded = 0
-            CHUNK = 256 * 10240
-            with open(file, 'wb') as fp:
+            with open(mfile, 'wb') as fp:
                 while True:
                     chunk = req.read(CHUNK)
-                    if not chunk: break
+                    if not chunk:
+                        break
                     fp.write(chunk)
-        except urllib2.HTTPError, e:
-            print "HTTP Error:", e.code, url
+        except urllib2.HTTPError, err:
+            print "HTTP Error:", err.code, url
             return False
-        except urllib2.URLError, e:
-            print "URL Error:", e.reason, url
+        except urllib2.URLError, err:
+            print "URL Error:", err.reason, url
             return False
 
-        return file
+        return mfile
 
     def create_dir(self, path):
-        u"""Crée le répertoire si il n'existe pas
+        """Crée le répertoire si il n'existe pas
 
         Args:
             path: Repertoire a créer
@@ -163,7 +160,7 @@ class DownloadScan(object):
         return path
 
     def list_scan_chapters(self):
-        u"""Parse la page du scan pour savoir combien de chapitre
+        """Parse la page du scan pour savoir combien de chapitre
         sont disponibles.
 
         TODO:
@@ -176,14 +173,16 @@ class DownloadScan(object):
         url = urlparse.urljoin(DEFAULT_CHAPTER_URL, "%s/" % self.scan_name)
         if self.test_url(url):
             html = str(urllib2.urlopen(url).read())
-            tabs = re.findall('(<td class="td">)([A-Za-z0-9\-\ \:]+)(chapitre)\ ([0-9]+)', html)
+            tabs = re.findall(
+                r'(<td class="td">)([A-Za-z0-9\-\ \:]+)(chapitre)\ ([0-9]+)',
+                html)
             for t in tabs:
                 chapters.append(t[3])
-                print u"chapitre %s trouvé" % t[3]
+                print "chapitre %s trouvé" % t[3]
         return chapters
 
     def list_chapter_page_number(self, chapter_num):
-        u"""Liste le nombre de page pour un chapitre
+        """Liste le nombre de page pour un chapitre
 
         Args:
             chapter_number: numéro du chapitre
@@ -191,17 +190,20 @@ class DownloadScan(object):
         Returns:
             Nombre de page trouvé
         """
-        url = "/".join([SCAN_DOMAIN, self.scan_name, str(chapter_num), "0/0/1.html"])
+        url = "/".join(
+            [SCAN_DOMAIN, self.scan_name, str(chapter_num), "0/0/1.html"])
         if self.test_url(url):
             html = str(urllib2.urlopen(url).read())
-            pages = re.findall('(<span class="chapter-max_images">)([0-9]+)(</span)', html)
+            pages = re.findall(
+                r'(<span class="chapter-max_images">)([0-9]+)(</span)', html)
             if pages:
-                print u"%s pages trouvé pour le chapitre %s" % (pages[0][1], chapter_num)
+                print "%s pages trouvé pour le chapitre %s" % (
+                    pages[0][1], chapter_num)
                 return range(1, int(pages[0][1])+1)
         return []
 
     def list_pages_by_chapters(self):
-        u"""TODO: Liste le nombre de page par chapitre
+        """TODO: Liste le nombre de page par chapitre
 
         Args:
             chapters: liste des chapitres
@@ -222,15 +224,12 @@ class DownloadScan(object):
         return t_return
 
     def download_scan(self, ignore_files=False):
-        u""" Téléchargement des scan
+        """ Téléchargement des scan
 
         TODO:
             Gérer les authentification HTTP
             Remplace subprocess par la librairie curl directement
         """
-        tmp_scan_path = os.path.join(
-            TMP_PATH, DEFAULT_SCAN_DIRNAME, self.scan_name)
-
         for scan in self.list_pages_by_chapters():
             print u">> Téléchargement du chapitre %s" % scan[0]
 
@@ -259,18 +258,19 @@ class DownloadScan(object):
                         img_found = True
                         break
 
-                # TODO: log dans un fichier
-                # Si on a pas du tout trouvé d'image on saute
-                # le téléchargement
+                """TODO: log dans un fichier
+                Si on a pas du tout trouvé d'image on saute
+                le téléchargement
+                """
                 if not img_found:
                     print u"la page %s n'a pas été trouvé" % page
                     continue
 
         return
 
+
 def main():
-    u"""Lance l'execution de la commande `download-manga`
-    """
+    "Lance l'execution de la commande `download-manga`"
     args = parser.parse_args()
 
     scan_label = args.scan_label

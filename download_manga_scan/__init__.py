@@ -2,29 +2,32 @@
 """
 This file is part of Download Manga Scan.
 
-Foobar is free software: you can redistribute it and/or modify
+Download Manga Scan is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Foobar is distributed in the hope that it will be useful,
+Download Manga Scan is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>
+along with Download Manga Scan.  If not, see <http://www.gnu.org/licenses/>
 """
+from __future__ import unicode_literals
+
 from download_scan import main
 
 __author__ = "Laurent Vergerolle"
 __copyright__ = "Copyright (c) 2014 Laurent Vergerolle"
 __license__ = "GPL-V3"
-__all__ = ['main',]
+__all__ = ['main', ]
+
 
 def get_version(version, alpha_num=None, beta_num=None,
                 rc_num=None, post_num=None, dev_num=None):
-    u"""Crée la version en fonction de la PEP 386.
+    """Crée la version en fonction de la PEP 386.
     On affiche toujours la version la moins aboutie.
     Exemple, si alpha, beta et rc sont spécifié, on affiche la version
     comme alpha.
@@ -44,7 +47,7 @@ def get_version(version, alpha_num=None, beta_num=None,
     if version[2]:
         num += ".%s" % int(version[2])
 
-    letter_marker = False # permet de sortir si on a un marqueur de type lettre
+    letter_marker = False  # permet de sortir si on a un marqueur lettre
     if alpha_num:
         num += "a%s" % int(alpha_num)
         letter_marker = True
