@@ -17,7 +17,7 @@ along with Download Manga Scan.  If not, see <http://www.gnu.org/licenses/>
 """
 from __future__ import unicode_literals
 
-from download_scan import main
+from .download_scan import main
 
 __author__ = "Laurent Vergerolle"
 __copyright__ = "Copyright (c) 2014 Laurent Vergerolle"
@@ -67,4 +67,5 @@ def get_version(version, alpha_num=None, beta_num=None,
 
     return num
 
-__version__ = get_version((0, 0, 1), beta_num=1, dev_num=1)
+
+__version__ = get_version((0, 0, 1), beta_num=1, dev_num=2)

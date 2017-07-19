@@ -19,8 +19,10 @@ along with Download Manga Scan.  If not, see <http://www.gnu.org/licenses/>
 from __future__ import unicode_literals
 
 import argparse
-import urllib2
-import urlparse
+# import urllib2
+from urllib.request import urlopen
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
 import os
 import re
 
@@ -90,17 +92,17 @@ class DownloadScan(object):
             Faux si une Erreur HTTP est relevé sinon Vrai
         """
         try:
-            resp = urllib2.urlopen(url)
+            resp = urlopen(url)
             # Utile pour les sites qui redirige vers des URLS à la con
             # Au lieu de renvoyer un vrai 404
             if '404.html' in resp.geturl():
                 return False
             return True
-        except urllib2.HTTPError, err:
-            print "HTTP Error:", err.code, url
+        except HTTPError as err:
+            print("HTTP Error: {} {}".format(err.code, url))
             return False
-        except urllib2.URLError, err:
-            print "URL Error:", err.reason, url
+        except URLError as err:
+            print("URL Error: {} {}".format(err.reason, url))
             return False
 
     def download_file(self, url, path=None, ignore_file=False):
@@ -121,25 +123,25 @@ class DownloadScan(object):
 
         basefile = os.path.basename(url)
 
-        os.umask(0002)
+        os.umask('0002')
         try:
             mfile = os.path.join(path, basefile)
             if os.path.exists(mfile) and not ignore_file:
-                print "Le fichier a déjà été téléchargé"
+                print("Le fichier a déjà été téléchargé")
                 return mfile
 
-            req = urllib2.urlopen(url)
+            req = urlopen(url)
             with open(mfile, 'wb') as fp:
                 while True:
                     chunk = req.read(CHUNK)
                     if not chunk:
                         break
                     fp.write(chunk)
-        except urllib2.HTTPError, err:
-            print "HTTP Error:", err.code, url
+        except HTTPError as err:
+            print("HTTP Error: {} {}".format(err.code, url))
             return False
-        except urllib2.URLError, err:
-            print "URL Error:", err.reason, url
+        except URLError as err:
+            print("URL Error: {} {}".format(err.reason, url))
             return False
 
         return mfile
@@ -155,7 +157,7 @@ class DownloadScan(object):
         """
         # Test : si le repertoire n'existe pas on le cree
         if not os.path.exists(path):
-            os.makedirs(path, 0755)
+            os.makedirs(path, 755)
 
         return path
 
@@ -172,13 +174,13 @@ class DownloadScan(object):
         chapters = []
         url = urlparse.urljoin(DEFAULT_CHAPTER_URL, "%s/" % self.scan_name)
         if self.test_url(url):
-            html = str(urllib2.urlopen(url).read())
+            html = str(urlopen(url).read())
             tabs = re.findall(
                 r'(<td class="td">)([A-Za-z0-9\-\ \:]+)(chapitre)\ ([0-9]+)',
                 html)
             for t in tabs:
                 chapters.append(t[3])
-                print "chapitre %s trouvé" % t[3]
+                print("chapitre {} trouvé".format(t[3]))
         return chapters
 
     def list_chapter_page_number(self, chapter_num):
@@ -193,12 +195,12 @@ class DownloadScan(object):
         url = "/".join(
             [SCAN_DOMAIN, self.scan_name, str(chapter_num), "0/0/1.html"])
         if self.test_url(url):
-            html = str(urllib2.urlopen(url).read())
+            html = str(urlopen(url).read())
             pages = re.findall(
                 r'(<span class="chapter-max_images">)([0-9]+)(</span)', html)
             if pages:
-                print "%s pages trouvé pour le chapitre %s" % (
-                    pages[0][1], chapter_num)
+                print("{} pages trouvé pour le chapitre {}".format(
+                    pages[0][1], chapter_num))
                 return range(1, int(pages[0][1])+1)
         return []
 
@@ -231,7 +233,7 @@ class DownloadScan(object):
             Remplace subprocess par la librairie curl directement
         """
         for scan in self.list_pages_by_chapters():
-            print u">> Téléchargement du chapitre %s" % scan[0]
+            print(">> Téléchargement du chapitre {}".format(scan[0]))
 
             chapter_dir = "%s_%s" % (DEFAULT_SCAN_CHAPTER_DIRNAME, scan[0])
 
@@ -254,7 +256,7 @@ class DownloadScan(object):
                         chapter_path,
                         ignore_files)
                     if dl_file:
-                        print u">> Téléchargement de la page %s" % page
+                        print(">> Téléchargement de la page {}".format(page))
                         img_found = True
                         break
 
@@ -263,7 +265,7 @@ class DownloadScan(object):
                 le téléchargement
                 """
                 if not img_found:
-                    print u"la page %s n'a pas été trouvé" % page
+                    print("la page {} n'a pas été trouvé".format(page))
                     continue
 
         return
@@ -281,6 +283,7 @@ def main():
     # téléchargement
     dl = DownloadScan(scan_label, scan_path, chapters)
     dl.download_scan(ignore_files)
+
 
 if __name__ == '__main__':
     main()
